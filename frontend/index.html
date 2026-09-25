@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WeatherGPT - AI Weather Intelligence</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Background Ambient Animated Blobs -->
+    <div class="blob-container">
+        <div class="blob blob-1"></div>
+        <div class="blob blob-2"></div>
+        <div class="blob blob-3"></div>
+    </div>
+
+    <div class="app-container">
+        <!-- Glass Navigation Header -->
+        <header class="glass-header">
+            <div class="brand">
+                <div class="logo-icon">
+                    <i class="fa-solid fa-cloud-bolt"></i>
+                </div>
+                <div class="brand-text">
+                    <h1>Weather<span>GPT</span></h1>
+                    <p class="tagline">Autonomous AI Weather Intelligence</p>
+                </div>
+            </div>
+
+            <div class="header-right">
+                <div class="status-pill" id="healthPill">
+                    <span class="status-dot"></span>
+                    <span id="healthText">Connecting to API...</span>
+                </div>
+                <button class="glass-btn-icon" id="themeToggle" title="Toggle Glass Effect">
+                    <i class="fa-solid fa-wand-magic-sparkles"></i>
+                </button>
+            </div>
+        </header>
+
+        <!-- Main Glass Dashboard Grid -->
+        <main class="dashboard-grid">
+            
+            <!-- Left Column: AI Weather Agent Chat -->
+            <section class="glass-card chat-card">
+                <div class="card-header">
+                    <div class="card-title">
+                        <i class="fa-solid fa-robot text-cyan"></i>
+                        <h2>AI Weather Agent</h2>
+                    </div>
+                    <div class="agent-badge">
+                        <i class="fa-solid fa-brain"></i> Grounded LLM
+                    </div>
+                </div>
+
+                <!-- Quick Prompts Slider -->
+                <div class="quick-prompts">
+                    <button class="prompt-chip" data-prompt="What is the weather in Ahmedabad?">
+                        <i class="fa-solid fa-sun"></i> Ahmedabad Weather
+                    </button>
+                    <button class="prompt-chip" data-prompt="Will it rain tomorrow evening in Ahmedabad?">
+                        <i class="fa-solid fa-cloud-showers-heavy"></i> Rain Tomorrow Evening
+                    </button>
+                    <button class="prompt-chip" data-prompt="Should I spray pesticide tomorrow in Ahmedabad?">
+                        <i class="fa-solid fa-wheat-awn"></i> Farmer Pesticide Spray
+                    </button>
+                    <button class="prompt-chip" data-prompt="Mumbai ma aajnu havaman kevu chhe?">
+                        <i class="fa-solid fa-language"></i> Gujarati Weather
+                    </button>
+                </div>
+
+                <!-- Chat Messages Scrollable Box -->
+                <div class="chat-history" id="chatHistory">
+                    <!-- Welcome Message -->
+                    <div class="chat-bubble agent-bubble">
+                        <div class="bubble-header">
+                            <span class="bubble-avatar"><i class="fa-solid fa-cloud-bolt"></i></span>
+                            <span class="bubble-author">WeatherGPT Agent</span>
+                            <span class="bubble-time">Just now</span>
+                        </div>
+                        <div class="bubble-content">
+                            Hello! I am your AI Weather Intelligence Assistant. Ask me anything about current weather, 7-day forecasts, hourly predictions, rain chances, or agricultural advice!
+                        </div>
+                        <div class="bubble-meta">
+                            <span class="meta-tag"><i class="fa-solid fa-shield-halved"></i> 100% Grounded</span>
+                            <span class="meta-tag"><i class="fa-solid fa-globe"></i> EN / HI / GU</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Chat Input Controls -->
+                <div class="chat-input-wrapper">
+                    <div id="micStatusPill" class="mic-status-pill hidden">
+                        <span class="pulse-red"></span>
+                        <span id="micStatusText">Listening... Speak now!</span>
+                    </div>
+
+                    <form id="chatForm" class="glass-input-box">
+                        <select id="voiceLangSelect" class="voice-lang-select" title="Voice Recognition Language">
+                            <option value="en-IN" selected>🇬🇧 EN (India)</option>
+                            <option value="hi-IN">🇮🇳 Hindi (हिंदी)</option>
+                            <option value="gu-IN">🇮🇳 Gujarati (ગુજરાતી)</option>
+                            <option value="en-US">🇺🇸 EN (US)</option>
+                        </select>
+                        <input type="text" id="userInput" placeholder="Ask about weather, rain, crops, or forecast..." autocomplete="off">
+                        <button type="button" id="micBtn" class="input-action-btn mic-btn" title="Click to Speak (STT)">
+                            <i class="fa-solid fa-microphone"></i>
+                        </button>
+                        <button type="submit" id="sendBtn" class="send-btn">
+                            <span>Send</span>
+                            <i class="fa-solid fa-paper-plane"></i>
+                        </button>
+                    </form>
+                </div>
+            </section>
+
+            <!-- Right Column: Weather Intelligence Dashboard -->
+            <section class="dashboard-right">
+                
+                <!-- Hero Weather Card -->
+                <div class="glass-card hero-weather-card" id="heroCard">
+                    <div class="hero-top">
+                        <div>
+                            <h3 id="locationName" class="location-title">Ahmedabad</h3>
+                            <p id="weatherDate" class="date-subtitle">Verified Open-Meteo Realtime</p>
+                        </div>
+                        <div class="weather-icon-large" id="weatherIcon">
+                            <i class="fa-solid fa-cloud-sun"></i>
+                        </div>
+                    </div>
+
+                    <div class="hero-main">
+                        <div class="temp-display">
+                            <span id="tempValue">--</span><span class="deg">&deg;C</span>
+                        </div>
+                        <div class="condition-display">
+                            <span id="conditionText" class="condition-badge">Fetching data...</span>
+                            <div class="hero-subtext">
+                                Feels like <span id="feelsLikeValue">--</span>&deg;C
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="hero-footer-meta" id="sourceMeta">
+                        <span><i class="fa-solid fa-database"></i> Source: <strong id="sourceName">Open-Meteo API</strong></span>
+                        <span><i class="fa-solid fa-circle-check text-green"></i> Confidence: <strong id="confidenceScore">High</strong></span>
+                    </div>
+                </div>
+
+                <!-- Weather Details Metrics Grid -->
+                <div class="metrics-grid">
+                    <div class="glass-card metric-card">
+                        <div class="metric-icon icon-rain">
+                            <i class="fa-solid fa-cloud-rain"></i>
+                        </div>
+                        <div class="metric-data">
+                            <span class="metric-label">Rain Probability</span>
+                            <span class="metric-value" id="rainProb">--%</span>
+                        </div>
+                    </div>
+
+                    <div class="glass-card metric-card">
+                        <div class="metric-icon icon-humidity">
+                            <i class="fa-solid fa-droplet"></i>
+                        </div>
+                        <div class="metric-data">
+                            <span class="metric-label">Humidity</span>
+                            <span class="metric-value" id="humidityVal">--%</span>
+                        </div>
+                    </div>
+
+                    <div class="glass-card metric-card">
+                        <div class="metric-icon icon-wind">
+                            <i class="fa-solid fa-wind"></i>
+                        </div>
+                        <div class="metric-data">
+                            <span class="metric-label">Wind Speed</span>
+                            <span class="metric-value" id="windSpeed">-- km/h</span>
+                        </div>
+                    </div>
+
+                    <div class="glass-card metric-card">
+                        <div class="metric-icon icon-sun">
+                            <i class="fa-solid fa-sun"></i>
+                        </div>
+                        <div class="metric-data">
+                            <span class="metric-label">Sunrise / Sunset</span>
+                            <span class="metric-value" id="sunTimes">-- / --</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Sector Advisory Glass Card -->
+                <div class="glass-card advisory-card" id="advisoryCard">
+                    <div class="card-title">
+                        <i class="fa-solid fa-compass-drafting text-amber"></i>
+                        <h3>Sector Intelligence Advisory</h3>
+                    </div>
+                    <p id="advisoryText" class="advisory-body">
+                        Ask agriculture or outdoor questions to receive tailored recommendations grounded on humidity, wind, and precipitation probability.
+                    </p>
+                </div>
+
+            </section>
+        </main>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
